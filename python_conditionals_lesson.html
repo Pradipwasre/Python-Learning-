@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Basics & Conditional Statements</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        .section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+            font-size: 1.8em;
+        }
+
+        .section h3 {
+            color: #764ba2;
+            margin: 25px 0 15px 0;
+            font-size: 1.4em;
+        }
+
+        .revision-badge {
+            display: inline-block;
+            background: #ffd700;
+            color: #333;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .new-topic-badge {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .code-block {
+            background: #1e1e1e;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .code-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #333;
+        }
+
+        .code-dots {
+            display: flex;
+            gap: 6px;
+            margin-right: 15px;
+        }
+
+        .code-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot-red { background: #ff5f56; }
+        .dot-yellow { background: #ffbd2e; }
+        .dot-green { background: #27c93f; }
+
+        .code-title {
+            color: #888;
+            font-size: 0.9em;
+            font-family: 'Courier New', monospace;
+        }
+
+        .code-content {
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #d4d4d4;
+            overflow-x: auto;
+        }
+
+        .code-content pre {
+            margin: 0;
+        }
+
+        .keyword { color: #569cd6; }
+        .string { color: #ce9178; }
+        .number { color: #b5cea8; }
+        .comment { color: #6a9955; }
+        .function { color: #dcdcaa; }
+        .operator { color: #d4d4d4; }
+
+        .key-points {
+            background: #f0f4ff;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .key-points ul {
+            margin-left: 20px;
+        }
+
+        .key-points li {
+            margin: 10px 0;
+        }
+
+        .example-box {
+            background: #fff9e6;
+            border: 2px solid #ffd700;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+
+        .example-box h4 {
+            color: #f39c12;
+            margin-bottom: 15px;
+        }
+
+        .output-box {
+            background: #e8f5e9;
+            border-left: 4px solid #4CAF50;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .output-label {
+            color: #2e7d32;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .visual-diagram {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .flow-item {
+            display: inline-block;
+            background: white;
+            border: 2px solid #667eea;
+            padding: 15px 25px;
+            margin: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .arrow {
+            display: inline-block;
+            margin: 0 10px;
+            font-size: 1.5em;
+            color: #667eea;
+        }
+
+        .practice-section {
+            background: #ffe6e6;
+            border: 2px solid #ff6b6b;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+
+        .practice-section h4 {
+            color: #c92a2a;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Python Programming Journey</h1>
+            <p>Revision + Conditional Statements</p>
+        </div>
+
+        <!-- REVISION SECTION -->
+        <div class="section">
+            <span class="revision-badge">QUICK REVISION</span>
+            <h2>Part 1: What We Have Learned</h2>
+
+            <h3>1. Variables and Data Types</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="code-dots">
+                        <div class="code-dot dot-red"></div>
+                        <div class="code-dot dot-yellow"></div>
+                        <div class="code-dot dot-green"></div>
+                    </div>
+                    <div class="code-title">variables_basics.py</div>
+                </div>
+                <div class="code-content">
+                    <pre><span class="comment"># Creating simple variables</span>
+<span class="keyword">name</span> = <span class="string">"Alice"</span>          <span class="comment"># String</span>
+<span class="keyword">age</span> = <span class="number">15</span>                <span class="comment"># Integer</span>
+<span class="keyword">height</span> = <span class="number">5.6</span>            <span class="comment"># Float</span>
+<span class="keyword">is_student</span> = <span class="number">True</span>      <span class="comment"># Boolean</span>
+<span class="keyword">complex_num</span> = <span class="number">3 + 4j</span>    <span class="comment"># Complex</span>
+
+<span class="comment"># Sequence types</span>
+<span class="keyword">fruits</span> = [<span class="string">"apple"</span>, <span class="string">"banana"</span>, <span class="string">"cherry"</span>]  <span class="comment"># List</span>
+<span class="keyword">coordinates</span> = (<span class="number">10</span>, <span class="number">20</span>)                      <span class="comment"># Tuple</span></pre>
+                </div>
+            </div>
+
+            <div class="key-points">
+                <strong>Variable Naming Rules:</strong>
+                <ul>
+                    <li>Must start with a letter or underscore</li>
+                    <li>Cannot start with a number</li>
+                    <li>Can only contain letters, numbers, and underscores</li>
+                    <li>Case-sensitive (age and Age are different)</li>
+                </ul>
+            </div>
+
+            <h3>2. Type Casting</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="code-dots">
+                        <div class="code-dot dot-red"></div>
+                        <div class="code-dot dot-yellow"></div>
+                        <div class="code-dot dot-green"></div>
+                    </div>
+                    <div class="code-title">type_casting.py</div>
+                </div>
+                <div class="code-content">
+                    <pre><span class="comment"># Converting between types</span>
+<span class="keyword">x</span> = <span class="number">10</span>
+<span class="keyword">y</span> = <span class="function">float</span>(x)          <span class="comment"># 10 becomes 10.0</span>
+<span class="function">print</span>(y)
+
+<span class="keyword">price</span> = <span class="string">"100"</span>
+<span class="keyword">total</span> = <span class="function">int</span>(price) + <span class="number">50</span>  <span class="comment"># "100" becomes 100</span>
+<span class="function">print</span>(total)            <span class="comment"># Output: 150</span>
+
+<span class="keyword">score</span> = <span class="number">85</span>
+<span class="keyword">message</span> = <span class="string">"Your score is "</span> + <span class="function">str</span>(score)
+<span class="function">print</span>(message)          <span class="comment"># Output: Your score is 85</span></pre>
+                </div>
+            </div>
+
+            <h3>3. String Operations</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="code-dots">
+                        <div class="code-dot dot-red"></div>
+                        <div class="code-dot dot-yellow"></div>
+                        <div class="code-dot dot-green"></div>
+                    </div>
+                    <div class="code-title">string_operations.py</div>
+                </div>
+                <div class="code-content">
+                    <pre><span class="keyword">text</span> = <span class="string">"Python Programming"</span>
+
+<span class="comment"># String methods</span>
+<span class="function">print</span>(text.<span class="function">upper</span>())       <span class="comment"># PYTHON PROGRAMMING</span>
+<span class="function">print</span>(text.<span class="function">lower</span>())       <span class="comment"># python programming</span>
+<span class="function">print</span>(text.<span class="function">replace</span>(<span class="string">"Python"</span>, <span class="string">"Java"</span>))  <span class="comment"># Java Programming</span>
+
+<span class="comment"># Indexing</span>
+<span class="function">print</span>(text[<span class="number">0</span>])           <span class="comment"># P (first character)</span>
+<span class="function">print</span>(text[-<span class="number">1</span>])          <span class="comment"># g (last character)</span>
+
+<span class="comment"># Slicing</span>
+<span class="function">print</span>(text[<span class="number">0</span>:<span class="number">6</span>])        <span class="comment"># Python</span>
+<span class="function">print</span>(text[<span class="number">7</span>:])          <span class="comment"># Programming</span></pre>
+                </div>
+            </div>
+
+            <h3>4. Operators</h3>
+            
+            <table>
+                <tr>
+                    <th>Operator Type</th>
+                    <th>Operators</th>
+                    <th>Example</th>
+                </tr>
+                <tr>
+                    <td>Arithmetic</td>
+                    <td>+, -, *, /, //, %, **</td>
+                    <td>5 + 3 = 8, 10 // 3 = 3</td>
+                </tr>
+                <tr>
+                    <td>Comparison</td>
+                    <td>&lt;, &gt;, &lt;=, &gt;=, ==, !=</td>
+                    <td>5 &gt; 3 is True</td>
+                </tr>
+                <tr>
+                    <td>Logical</td>
+                    <td>and, or, not</td>
+                    <td>True and False is False</td>
+                </tr>
+                <tr>
+                    <td>Assignment</td>
+                    <td>=, +=, -=, *=, /=</td>
+                    <td>x += 5 means x = x + 5</td>
+                </tr>
+            </table>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="code-dots">
+                        <div class="code-dot dot-red"></div>
+                        <div class="code-dot dot-yellow"></div>
+                        <div class="code-dot dot-green"></div>
+                    </div>
+                    <div class="code-title">operators_demo.py</div>
+                </div>
+                <div class="code-content">
+                    <pre><span class="comment"># Arithmetic operators</span>
+<span class="keyword">a</span> = <span class="number">10</span>
+<span class="keyword">b</span> = <span class="number">3</span>
+<span class="function">print</span>(a + b)    <span class="comment"># 13 (addition)</span>
+<span class="function">print</span>(a // b)   <span class="comment"># 3 (floor division)</span>
+<span class="function">print</span>(a % b)    <span class="comment"># 1 (remainder)</span>
+<span class="function">print</span>(a ** b)   <span class="comment"># 1000 (power: 10^3)</span>
+
+<span class="comment"># Comparison operators</span>
+<span class="keyword">age</span> = <span class="number">16</span>
+<span class="function">print</span>(age >= <span class="number">18</span>)       <span class="comment"># False</span>
+<span class="function">print</span>(age == <span class="number">16</span>)       <span class="comment"># True</span>
+
+<span class="comment"># Logical operators</span>
+<span class="keyword">has_ticket</span> = <span class="number">True</span>
+<span class="keyword">has_id</span> = <span class="number">False</span>
+<span class="function">print</span>(has_ticket <span class="keyword">and</span> has_id)    <span class="comment"># False</span>
+<span class="function">print</span>(has_ticket <span class="keyword">or</span> has_id)     <span class="comment"># True</span></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEW TOPIC SECTION -->
+        <div class="section">
+            <span class="new-topic-badge">NEW TOPIC</span>
+            <h2>Part 2: Making Decisions with Conditional Statements</h2>
+
+            <p style="margin: 20px 0; font-size: 1.1em;">Conditional statements allow your program to make decisions based on conditions. Think of it like real life: "If it rains, take an umbrella. Otherwise, don't."</p>
+
+            <h3>Understanding Conditions</h3>
+            <div class="visual-diagram">
+                <div class="flow-item">Check Condition</div>
+                <span class="arrow">→</span>
+                <div class="flow-item">True or False?</div>
+                <span class="arrow">→</span>
+                <div class="flow-item">Execute Code</div>
+            </div>
+
+            <h3>1. The if Statement</h3>
+            <p>The if statement executes code only when a condition is True.</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="code-dots">
+                        <div class="code-dot dot-red"></div>
+                        <div class="code-dot dot-yellow"></div>
+                        <div class="code-dot dot-green"></div>
+                    </div>
+                    <div class="code-title">if_statement.py</div>
+                </div>
+                <div class="code-content">
+                    <pre><span class="comment"># Simple if statement</span>
+<span class="keyword">age</span> = <span class="number">20</span>
+
+<span class="keyword">if</span> age >= <span class="number">18</span>:
+    <span class="function">print</span>(<span class="string">"You are an adult"</span>)
+    <span class="function">print</span>(<span class="string">"You can vote"</span>)
+
+<span class="function">print</span>(<span class="string">"Program continues..."</span>)</pre>
+                </div>
+            </div>
+
+            <div class="output-box">
+                <div class="output-label">Output:</div>
+                You are an adult<br>
+                You can vote<br>
+                Program continues...
+            </div>
+
+            <div class="example-box">
+                <h4>Real-World Example: Temperature Check</h4>
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-dots">
+                            <div class="code-dot dot-red"></div>
+                            <div class="code-dot dot-yellow"></div>
+                            <div class="code-dot dot-green"></div>
+                        </div>
+                        <div class="code-title">temperature.py</div>
+                    </div>
+                    <div class="code-content">
+                        <pre><span class="keyword">temperature</span> = <span class="number">35</span>
+
+<span class="keyword">if</span> temperature > <span class="number">30</span>:
+    <span class="function">print</span>(<span class="string">"It's hot outside!"</span>)
+    <span class="function">print</span>(<span class="string">"Drink plenty of water"</span>)</pre>
+                    </div>
+                </div>
+            </div>
+
+            <h3>2. The if-else Statement</h3>
+            <p>The if-else statement provides an alternative action when the condition is False.</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="code-dots">
+                        <div class="code-dot dot-red"></div>
+                        <div class="code-dot dot-yellow"></div>
+                        <div class="code-dot dot-green"></div>
+                    </div>
+                    <div class="code-title">if_else.py</div>
+                </div>
+                <div class="code-content">
+                    <pre><span class="keyword">marks</span> = <span class="number">45</span>
+
+<span class="keyword">if</span> marks >= <span class="number">50</span>:
+    <span class="function">print</span>(<span class="string">"Congratulations! You passed."</span>)
+<span class="keyword">else</span>:
+    <span class="function">print</span>(<span class="string">"Sorry, you failed."</span>)
+    <span class="function">print</span>(<span class="string">"Better luck next time!"</span>)
+
+<span class="function">print</span>(<span class="string">"Exam result displayed"</span>)</pre>
+                </div>
+            </div>
+
+            <div class="output-box">
+                <div class="output-label">Output:</div>
+                Sorry, you failed.<br>
+                Better luck next time!<br>
+                Exam result displayed
+            </div>
+
+            <div class="visual-diagram">
+                <h4>if-else Flow</h4>
+                <div style="margin-top: 20px;">
+                    <div class="flow-item">Condition</div><br>
+                    <span class="arrow">↓ True</span> <span style="margin: 0 40px;"></span> <span class="arrow">↓ False</span><br>
+                    <div class="flow-item">if block</div> <span style="margin: 0 20px;"></span> <div class="flow-item">else block</div>
+                </div>
+            </div>
+
+            <h3>3. The elif Statement</h3>
+            <p>The elif (else if) statement allows you to check multiple conditions in sequence.</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="code-dots">
+                        <div class="code-dot dot-red"></div>
+                        <div class="code-dot dot-yellow"></div>
+                        <div class="code-dot dot-green"></div>
+                    </div>
+                    <div class="code-title">elif_statement.py</div>
+                </div>
+                <div class="code-content">
+                    <pre><span class="keyword">score</span> = <span class="number">75</span>
+
+<span class="keyword">if</span> score >= <span class="number">90</span>:
+    <span class="function">print</span>(<span class="string">"Grade: A"</span>)
+<span class="keyword">elif</span> score >= <span class="number">80</span>:
+    <span class="function">print</span>(<span class="string">"Grade: B"</span>)
+<span class="keyword">elif</span> score >= <span class="number">70</span>:
+    <span class="function">print</span>(<span class="string">"Grade: C"</span>)
+<span class="keyword">elif</span> score >= <span class="number">60</span>:
+    <span class="function">print</span>(<span class="string">"Grade: D"</span>)
+<span class="keyword">else</span>:
+    <span class="function">print</span>(<span class="string">"Grade: F"</span>)</pre>
+                </div>
+            </div>
+
+            <div class="output-box">
+                <div class="output-label">Output:</div>
+                Grade: C
+            </div>
+
+            <div class="key-points">
+                <strong>Important Points about elif:</strong>
+                <ul>
+                    <li>Python checks conditions from top to bottom</li>
+                    <li>Once a condition is True, it executes that block and skips the rest</li>
+                    <li>You can have as many elif statements as needed</li>
+                    <li>The else statement is optional</li>
+                </ul>
+            </div>
+
+            <h3>4. Complete Example: Student Grading System</h3>
+            
+            <div class="example-box">
+                <h4>Project: Automatic Grade Calculator</h4>
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-dots">
+                            <div class="code-dot dot-red"></div>
+                            <div class="code-dot dot-yellow"></div>
+                            <div class="code-dot dot-green"></div>
+                        </div>
+                        <div class="code-title">grading_system.py</div>
+                    </div>
+                    <div class="code-content">
+                        <pre><span class="comment"># Student Grading System</span>
+<span class="keyword">student_name</span> = <span class="string">"Rahul"</span>
+<span class="keyword">marks</span> = <span class="number">78</span>
+
+<span class="function">print</span>(<span class="string">"====== Student Report Card ======"</span>)
+<span class="function">print</span>(<span class="string">f"Student Name: </span>{student_name}<span class="string">"</span>)
+<span class="function">print</span>(<span class="string">f"Marks Obtained: </span>{marks}<span class="string">"</span>)
+<span class="function">print</span>(<span class="string">"================================="</span>)
+
+<span class="comment"># Determine grade</span>
+<span class="keyword">if</span> marks >= <span class="number">90</span>:
+    <span class="keyword">grade</span> = <span class="string">"A+"</span>
+    <span class="keyword">remark</span> = <span class="string">"Outstanding!"</span>
+<span class="keyword">elif</span> marks >= <span class="number">80</span>:
+    <span class="keyword">grade</span> = <span class="string">"A"</span>
+    <span class="keyword">remark</span> = <span class="string">"Excellent!"</span>
+<span class="keyword">elif</span> marks >= <span class="number">70</span>:
+    <span class="keyword">grade</span> = <span class="string">"B"</span>
+    <span class="keyword">remark</span> = <span class="string">"Very Good!"</span>
+<span class="keyword">elif</span> marks >= <span class="number">60</span>:
+    <span class="keyword">grade</span> = <span class="string">"C"</span>
+    <span class="keyword">remark</span> = <span class="string">"Good"</span>
+<span class="keyword">elif</span> marks >= <span class="number">50</span>:
+    <span class="keyword">grade</span> = <span class="string">"D"</span>
+    <span class="keyword">remark</span> = <span class="string">"Needs Improvement"</span>
+<span class="keyword">else</span>:
+    <span class="keyword">grade</span> = <span class="string">"F"</span>
+    <span class="keyword">remark</span> = <span class="string">"Failed - Work Harder"</span>
+
+<span class="function">print</span>(<span class="string">f"Grade: </span>{grade}<span class="string">"</span>)
+<span class="function">print</span>(<span class="string">f"Remark: </span>{remark}<span class="string">"</span>)
+
+<span class="comment"># Check pass/fail status</span>
+<span class="keyword">if</span> marks >= <span class="number">50</span>:
+    <span class="function">print</span>(<span class="string">"Status: PASS"</span>)
+<span class="keyword">else</span>:
+    <span class="function">print</span>(<span class="string">"Status: FAIL"</span>)</pre>
+                    </div>
+                </div>
+
+                <div class="output-box">
+                    <div class="output-label">Output:</div>
+                    ====== Student Report Card ======<br>
+                    Student Name: Rahul<br>
+                    Marks Obtained: 78<br>
+                    =================================<br>
+                    Grade: B<br>
+                    Remark: Very Good!<br>
+                    Status: PASS
+                </div>
+            </div>
+
+            <h3>5. More if-else Examples</h3>
+
+            <div class="example-box">
+                <h4>Example 1: Even or Odd Number</h4>
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-dots">
+                            <div class="code-dot dot-red"></div>
+                            <div class="code-dot dot-yellow"></div>
+                            <div class="code-dot dot-green"></div>
+                        </div>
+                        <div class="code-title">even_odd.py</div>
+                    </div>
+                    <div class="code-content">
+                        <pre><span class="keyword">number</span> = <span class="number">17</span>
+
+<span class="keyword">if</span> number % <span class="number">2</span> == <span class="number">0</span>:
+    <span class="function">print</span>(<span class="string">f"</span>{number}<span class="string"> is an even number"</span>)
+<span class="keyword">else</span>:
+    <span class="function">print</span>(<span class="string">f"</span>{number}<span class="string"> is an odd number"</span>)</pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="example-box">
+                <h4>Example 2: Voting Eligibility</h4>
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-dots">
+                            <div class="code-dot dot-red"></div>
+                            <div class="code-dot dot-yellow"></div>
+                            <div class="code-dot dot-green"></div>
+                        </div>
+                        <div class="code-title">voting.py</div>
+                    </div>
+                    <div class="code-content">
+                        <pre><span class="keyword">age</span> = <span class="
