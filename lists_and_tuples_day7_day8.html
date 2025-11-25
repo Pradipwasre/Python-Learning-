@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Lists & Tuples — Day 7 & Day 8</title>
+  <style>
+    :root{
+      --page-bg: #f3f4f6;      /* light grey page */
+      --card-bg: #ffffff;      /* card background (white) */
+      --muted: #6b7280;        /* muted grey text */
+      --text: #0b1220;         /* main text (dark) */
+      --accent: #0f1724;       /* darker accent */
+      --radius: 14px;
+      --gap: 26px;
+      --shadow: 0 8px 26px rgba(15,23,42,0.08);
+      --code-bg: #0b1220;      /* dark code card background for contrast */
+      --code-text: #e6eef8;    /* code text color */
+      --code-comment: #9aa6b2; /* comment color (subtle) */
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;background:var(--page-bg);}
+
+    /* Page layout */
+    .app{
+      display:grid;
+      grid-template-columns: 320px 1fr;
+      gap:var(--gap);
+      padding:36px;
+      min-height:100vh;
+      align-items:start;
+    }
+
+    /* Sidebar */
+    .sidebar{
+      position:sticky;
+      top:36px;
+      align-self:start;
+      height:calc(100vh - 72px);
+      padding:20px;
+      background:var(--card-bg);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      overflow:auto;
+    }
+    .title{font-size:20px;font-weight:700;letter-spacing:-0.01em;color:var(--accent)}
+    .desc{font-size:13px;color:var(--muted);line-height:1.45}
+    .toc{margin-top:8px}
+    .toc h4{margin:0 0 10px 0;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.11em}
+    .toc a{
+      display:block;padding:10px;border-radius:8px;text-decoration:none;color:var(--text);font-size:14px;margin-bottom:6px;
+    }
+    .toc a small{display:block;color:var(--muted);font-weight:500}
+    .toc a.active{background:linear-gradient(90deg, rgba(15,23,42,0.06), rgba(15,23,42,0.02));font-weight:600}
+
+    /* Main content */
+    main{padding:0 8px 40px}
+    section{margin-bottom:48px}
+    .card{
+      background:var(--card-bg);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:22px;
+      margin-bottom:18px;
+    }
+    .card h2{margin:0 0 10px 0;font-size:18px}
+    .lead{color:var(--muted);line-height:1.6}
+
+    /* Code card (Carbon-like) */
+    .code-card{
+      border-radius:12px;overflow:auto;padding:18px;
+      background: linear-gradient(180deg, rgba(11,18,32,0.98) 0%, rgba(6,10,17,1) 100%);
+      color:var(--code-text);
+      box-shadow: 0 12px 30px rgba(2,6,23,0.5);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+      border:1px solid rgba(148,163,184,0.06);
+      margin-top:14px;
+    }
+    .code-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+    .dots{display:flex;gap:8px}
+    .dot{width:11px;height:11px;border-radius:50%}
+    .dot.red{background:#ff5f56}
+    .dot.yellow{background:#ffbd2e}
+    .dot.green{background:#27c93f}
+    pre{margin:0;white-space:pre;tab-size:4;font-size:13px;line-height:1.6;color:var(--code-text);}
+    pre code{display:block}
+    /* subtle lighter color for comments when copying visually only:
+       we keep code text plain so it's copy/pasteable; we do not inject spans into code content. */
+    .code-card .comment{color:var(--code-comment)}
+
+    /* Explanation small cards */
+    .explain{padding-left:16px}
+    .explain li{margin-bottom:10px}
+    .explain-note{
+      list-style:none;padding:14px 16px;border-radius:10px;margin-top:16px;background:#111827;color:var(--code-text);
+      box-shadow: 0 8px 24px rgba(2,6,23,0.45);
+    }
+    .explain-note li+li{margin-top:10px}
+    .explain-note strong{color:#facc15}
+
+    /* Methods grid */
+    .methods-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:10px}
+    .method{background:linear-gradient(180deg,#ffffff,#fbfdff);padding:14px;border-radius:10px;box-shadow:0 6px 16px rgba(10,14,20,0.06)}
+    .method h5{margin:0 0 6px 0;font-size:14px;color:var(--accent)}
+    .method code{display:block;background:#f1f5f9;padding:8px;border-radius:8px;font-size:13px;color:var(--text)}
+    .muted{color:var(--muted)}
+
+    /* Spacing to look like slides (vertical rhythm) */
+    .section-wrap{padding:26px 8px}
+    .section-wrap > .card:first-child{margin-top:6px}
+
+    /* Responsive */
+    @media (max-width:980px){
+      .app{grid-template-columns:1fr;padding:18px;}
+      .sidebar{position:relative;height:auto}
+    }
+
+    footer{color:var(--muted);font-size:13px;text-align:center;padding-top:6px}
+
+    /* small helpers for readable inline code in prose */
+    code.inline{background:#f3f4f6;padding:3px 6px;border-radius:6px;font-family:ui-monospace,monospace}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" aria-label="Table of contents">
+      <div>
+        <div class="title">Lists &amp; Tuples</div>
+        <div class="desc">Day 7 &amp; Day 8: clear, student-friendly explanations and copy-pasteable Python examples. Sticky TOC for fast navigation.</div>
+      </div>
+
+      <nav class="toc" id="toc">
+        <h4>Contents</h4>
+        <a href="#intro">Intro <small class="muted">Why these structures matter</small></a>
+        <a href="#day7">Day 7 — Lists <small class="muted">Indexing, slicing, methods</small></a>
+        <a href="#grocery">Grocery example <small class="muted">Method sequence</small></a>
+        <a href="#day8">Day 8 — Lists &amp; Tuples <small class="muted">Differences &amp; examples</small></a>
+        <a href="#methods">Methods (tiles) <small class="muted">List &amp; tuple methods</small></a>
+        <a href="#tips">Tips &amp; memory aids <small class="muted">When to use which</small></a>
+      </nav>
+    </aside>
+
+    <main>
+      <!-- INTRO -->
+      <section id="intro" class="section-wrap">
+        <div class="card">
+          <h2>Introduction — Why lists and tuples matter</h2>
+          <p class="lead">Lists and tuples are two of Python's core ordered collection types. They let you group multiple values in a single variable and access them by position. This lesson focuses on practical usage: how to read and transform lists, when to pick tuples instead, and a compact methods reference you can use as a cheat sheet.</p>
+        </div>
+      </section>
+
+      <!-- DAY 7 -->
+      <section id="day7" class="section-wrap">
+        <div class="card">
+          <h2>Day 7 — Harnessing Lists: Indexing, slicing, and core methods</h2>
+          <p class="lead">Lists are mutable ordered sequences — you can add, remove, and reorder elements. Below you will find essential operations explained simply, followed by valid Python examples you can copy and run immediately.</p>
+        </div>
+
+        <div class="card">
+          <h3>Indexing and slicing — precise access</h3>
+          <p class="muted">Indexing returns a single element by position; slicing extracts a sub-list. Indexes start at <code class="inline">0</code>. Negative indexes count from the end. Step values let you sample items.</p>
+
+          <div class="code-card" role="region" aria-label="Indexing example">
+            <div class="code-header">
+              <div class="dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div>
+              <div class="meta">Python — indexing &amp; slicing</div>
+            </div>
+            <pre><code>
+# indexing and slicing examples
+fruits = ['apple', 'banana', 'cherry', 'date', 'elderberry']
+first = fruits[0]            # 'apple'
+last = fruits[-1]            # 'elderberry'
+middle_slice = fruits[1:4]   # ['banana', 'cherry', 'date']
+start_to_third = fruits[:3]  # ['apple', 'banana', 'cherry']
+step_slice = fruits[::2]     # every 2nd element: ['apple','cherry','elderberry']
+print(first, last, middle_slice, start_to_third, step_slice)
+            </code></pre>
+          </div>
+
+          <!-- Explanations with dark background for readability -->
+          <ul class="explain-note" aria-hidden="false">
+            <li><strong>fruits[0]</strong> — selects the first element (index starts at 0).</li>
+            <li><strong>fruits[-1]</strong> — selects the last element; negative indices count from the end.</li>
+            <li><strong>fruits[1:4]</strong> — slice from index 1 up to (but not including) index 4.</li>
+            <li><strong>fruits[:3]</strong> — omitted start means start from index 0.</li>
+            <li><strong>fruits[::2]</strong> — third parameter is step, here take every second item.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>Common list operations (short examples)</h3>
+          <p class="muted">These short, copy-pasteable snippets show common in-place operations and non-destructive alternatives where helpful.</p>
+
+          <div class="code-card" role="region" aria-label="List operations sample">
+            <div class="code-header">
+              <div class="dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div>
+              <div class="meta">Python — list ops</div>
+            </div>
+            <pre><code>
+items = [3, 1, 4, 1, 5]
+
+# append: add one item to the end
+items.append(9)
+
+# extend: add all elements from another iterable
+items.extend([4, 2])
+
+# insert: insert at index 0
+items.insert(0, 7)
+
+# remove: remove first occurrence of value
+if 1 in items:
+    items.remove(1)
+
+# pop: remove and return last by default
+last = items.pop()
+
+# sorted: non-destructive sort (returns new list)
+sorted_items = sorted(items)
+
+# in-place sort & reverse
+items.sort()
+items.reverse()
+
+print(items, sorted_items, last)
+            </code></pre>
+          </div>
+
+          <ul class="explain">
+            <li><strong>append(x)</strong> — add x to the end. Use when adding a single element.</li>
+            <li><strong>extend(iterable)</strong> — append multiple elements from any iterable.</li>
+            <li><strong>insert(i, x)</strong> — insert x before position i.</li>
+            <li><strong>remove(x)</strong> — removes the first matching x; check membership to avoid <code>ValueError</code>.</li>
+            <li><strong>pop([i])</strong> — remove &amp; return element at i; default removes last.</li>
+            <li><strong>sorted()</strong> — returns a new sorted list; <code>list.sort()</code> sorts in-place.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- GROCERY EXAMPLE -->
+      <section id="grocery" class="section-wrap">
+        <div class="card">
+          <h2>Example: Grocery list — method-by-method sequence</h2>
+          <p class="lead">This example walks through a grocery list step-by-step. Each numbered comment shows the method name and then the exact line of code that uses it. The code is valid Python — copy and paste into a REPL or script.</p>
+        </div>
+
+        <div class="card">
+          <div class="code-card" role="region" aria-label="Grocery example">
+            <div class="code-header">
+              <div class="dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div>
+              <div class="meta">Python — grocery list demo (method sequence)</div>
+            </div>
+            <pre><code>
+# 1. start with a basic list
+grocery = ['milk', 'eggs', 'bread']
+
+# 2. append() — add a single item to the end
+grocery.append('butter')          # ['milk', 'eggs', 'bread', 'butter']
+
+# 3. extend() — add multiple items from another list
+grocery.extend(['apples', 'bananas'])  # adds apples and bananas
+
+# 4. insert() — insert at a specific position (0 = front)
+grocery.insert(1, 'orange juice')      # insert before index 1
+
+# 5. remove() — remove by value (first occurrence)
+grocery.remove('eggs')                 # removes 'eggs'
+
+# 6. pop() — pop an item (default: last) and use it
+item = grocery.pop()                   # removes and returns last item
+
+# 7. index() & count() — find position and frequency
+idx = grocery.index('bread')           # first position of 'bread'
+cnt = grocery.count('milk')            # how many times 'milk' appears
+
+# 8. sort() — keep list sorted for display (in-place)
+grocery.sort()
+
+# 9. reverse() — reverse ordering (in-place)
+grocery.reverse()
+
+# final view
+print('final grocery:', grocery)
+print('popped item:', item, 'bread index:', idx, 'milk count:', cnt)
+            </code></pre>
+          </div>
+
+          <ul class="explain">
+            <li><strong>Line-by-line:</strong> comments in the code show the purpose of each method; this sequence demonstrates typical list lifecycle: creation → add → modify → inspect → reorder.</li>
+            <li><strong>Exceptions:</strong> <code>remove(x)</code> raises <code>ValueError</code> if x is absent. If unsure, check <code>x in list</code> first.</li>
+            <li><strong>pop()</strong> is useful when you both want the value and to remove it from the list (e.g., treating list like a stack).</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- DAY 8 -->
+      <section id="day8" class="section-wrap">
+        <div class="card">
+          <h2>Day 8 — Lists &amp; Tuples: Understanding structures and their functions</h2>
+          <p class="lead">Tuples look like lists but cannot be changed after creation (they are immutable). That difference drives their use: tuples for fixed records, lists for mutable collections. Below are clear examples and patterns to help decide which to use.</p>
+        </div>
+
+        <div class="card">
+          <h3>Key differences (quick)</h3>
+          <ul class="explain">
+            <li><strong>Mutability:</strong> lists are mutable; tuples are immutable.</li>
+            <li><strong>Syntax:</strong> lists use <code>[]</code>; tuples typically use <code>()</code> or commas (e.g., <code>a = 1, 2</code>).</li>
+            <li><strong>Memory:</strong> tuples are slightly leaner in memory and can be marginally faster to create for fixed-size data.</li>
+            <li><strong>Use cases:</strong> lists for dynamic, changeable collections; tuples for fixed records (e.g., coordinates, function argument packs, dictionary keys).</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>Tuples — examples and how to modify safely</h3>
+
+          <div class="code-card" role="region" aria-label="Tuples examples">
+            <div class="code-header">
+              <div class="dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div>
+              <div class="meta">Python — tuples demo</div>
+            </div>
+            <pre><code>
+# tuple creation and immutability
+coords = (35.6895, 139.6917)   # Tokyo lat/lon
+pair = 1, 2                    # also a tuple
+
+# tuples are immutable: the following would raise a TypeError
+# coords[0] = 34.0
+
+# to change values, convert to list, modify, then back to tuple
+coords_list = list(coords)
+coords_list[0] = 34.0
+coords = tuple(coords_list)
+print(coords)
+            </code></pre>
+          </div>
+
+          <ul class="explain">
+            <li>Tuples are a good signal to readers: <em>this data is not intended to change</em>. Use them for fixed records.</li>
+            <li>Because they are hashable (when contents are hashable) you can use tuples as dictionary keys or set elements; lists cannot be used this way.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- METHODS -->
+      <section id="methods" class="section-wrap">
+        <div class="card">
+          <h2>Methods reference — tile view for quick lookup</h2>
+          <p class="muted">Compact tiles show common list &amp; tuple operations, a short signature, and a tiny example. This is a quick cheat sheet you can scan while coding.</p>
+
+          <h3 style="margin-top:14px;margin-bottom:8px">List methods</h3>
+          <div class="methods-grid" aria-label="List methods">
+            <div class="method">
+              <h5>append(x)</h5>
+              <code>lst.append(3)</code>
+              <div class="muted" style="margin-top:8px">Add x to the end (in-place).</div>
+            </div>
+
+            <div class="method">
+              <h5>extend(iterable)</h5>
+              <code>lst.extend([4,5])</code>
+              <div class="muted" style="margin-top:8px">Add all items from another iterable.</div>
+            </div>
+
+            <div class="method">
+              <h5>insert(i, x)</h5>
+              <code>lst.insert(0,'a')</code>
+              <div class="muted" style="margin-top:8px">Insert x before index i.</div>
+            </div>
+
+            <div class="method">
+              <h5>remove(x)</h5>
+              <code>lst.remove('a')</code>
+              <div class="muted" style="margin-top:8px">Remove first occurrence of x; raises if missing.</div>
+            </div>
+
+            <div class="method">
+              <h5>pop([i])</h5>
+              <code>last = lst.pop()</code>
+              <div class="muted" style="margin-top:8px">Remove and return element at i (default last).</div>
+            </div>
+
+            <div class="method">
+              <h5>clear()</h5>
+              <code>lst.clear()</code>
+              <div class="muted" style="margin-top:8px">Remove all items (empties list).</div>
+            </div>
+
+            <div class="method">
+              <h5>index(x[, start[, end]])</h5>
+              <code>i = lst.index('b')</code>
+              <div class="muted" style="margin-top:8px">Return first index of x; raises if missing.</div>
+            </div>
+
+            <div class="method">
+              <h5>count(x)</h5>
+              <code>n = lst.count(2)</code>
+              <div class="muted" style="margin-top:8px">Return number of occurrences.</div>
+            </div>
+
+            <div class="method">
+              <h5>sort(key=None, reverse=False)</h5>
+              <code>lst.sort()</code>
+              <div class="muted" style="margin-top:8px">Sort in-place. Use <code>sorted()</code> for a new list.</div>
+            </div>
+
+            <div class="method">
+              <h5>reverse()</h5>
+              <code>lst.reverse()</code>
+              <div class="muted" style="margin-top:8px">Reverse order in-place.</div>
+            </div>
+
+            <div class="method">
+              <h5>copy()</h5>
+              <code>new = lst.copy()</code>
+              <div class="muted" style="margin-top:8px">Shallow copy of the list.</div>
+            </div>
+          </div>
+
+          <h3 style="margin-top:18px;margin-bottom:8px">Tuple methods / operations</h3>
+          <div class="methods-grid" aria-label="Tuple methods">
+            <div class="method">
+              <h5>count(x)</h5>
+              <code>t.count(2)</code>
+              <div class="muted" style="margin-top:8px">Return number of occurrences.</div>
+            </div>
+
+            <div class="method">
+              <h5>index(x[, start[, end]])</h5>
+              <code>t.index('a')</code>
+              <div class="muted" style="margin-top:8px">Return first matching index.</div>
+            </div>
+
+            <div class="method">
+              <h5>tuple()</h5>
+              <code>tuple([1,2])</code>
+              <div class="muted" style="margin-top:8px">Constructor: create tuples from iterables.</div>
+            </div>
+
+            <div class="method">
+              <h5>Conversion</h5>
+              <code>list(t)</code>
+              <div class="muted" style="margin-top:8px">Convert to list to mutate then back to tuple.</div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- TIPS -->
+      <section id="tips" class="section-wrap">
+        <div class="card">
+          <h2>Tips &amp; memory helpers — When to use lists vs tuples</h2>
+          <ul class="explain">
+            <li><strong>Use lists when</strong> your collection will change (add/remove), or you need methods like <code>append</code>, <code>pop</code>, <code>sort</code>.</li>
+            <li><strong>Use tuples when</strong> the data is fixed: they are good for lightweight records, function argument groups, and dictionary keys.</li>
+            <li><strong>Memory &amp; performance:</strong> tuples are slightly leaner; for very large fixed datasets tuples can reduce memory footprint.</li>
+            <li><strong>Readability:</strong> choose the structure that communicates intent: tuple => fixed; list => dynamic.</li>
+            <li><strong>Common pitfall:</strong> calling list methods on a tuple will raise <code>AttributeError</code>. Convert to a list if you need to change it.</li>
+          </ul>
+        </div>
+
+        <footer>
+          Made for learning • generous spacing • single-file HTML
+        </footer>
+      </section>
+
+    </main>
+  </div>
+
+  <script>
+    // Smooth scrolling for TOC links and hash management
+    (function(){
+      const tocLinks = document.querySelectorAll('.toc a');
+      tocLinks.forEach(a => {
+        a.addEventListener('click', e => {
+          e.preventDefault();
+          const id = a.getAttribute('href').slice(1);
+          const el = document.getElementById(id);
+          if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+          history.replaceState(null, '', '#'+id);
+        });
+      });
+
+      // IntersectionObserver to highlight current section
+      const sections = document.querySelectorAll('main section');
+      const options = { root: null, rootMargin: '0px 0px -55% 0px', threshold: 0 };
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if(entry.isIntersecting){
+            const id = entry.target.id;
+            document.querySelectorAll('.toc a').forEach(a=> a.classList.remove('active'));
+            const link = document.querySelector('.toc a[href="#'+id+'"]');
+            if(link) link.classList.add('active');
+          }
+        });
+      }, options);
+      sections.forEach(s => observer.observe(s));
+
+      // Highlight top on load (if no hash)
+      window.addEventListener('load', () => {
+        const hash = location.hash.slice(1);
+        if(!hash) {
+          const first = document.querySelector('.toc a');
+          if(first) first.classList.add('active');
+        } else {
+          const link = document.querySelector('.toc a[href="#'+hash+'"]');
+          if(link) link.classList.add('active');
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
